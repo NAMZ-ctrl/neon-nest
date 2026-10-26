@@ -11,6 +11,7 @@ export const otpRequestLimiter = new Ratelimit({
   prefix: "runlayer:otp",
 });
 
+// get client IP to use in the rate limit
 export function getClientIp(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {

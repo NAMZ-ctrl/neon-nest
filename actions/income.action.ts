@@ -36,6 +36,9 @@ export async function getTotalIncome() {
   }
   try {
     const incomeTotal = await prisma.income.aggregate({
+      where: {
+        userId: session.userId
+      },
       _sum: {
         amount: true,
       },

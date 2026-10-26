@@ -2,10 +2,9 @@
 import { prisma } from "@/db/db";
 import { getUserId } from "@/libs/helpers";
 import { ActionResult, ConvertedFinancialAccount, Period } from "@/libs/types";
-import { AccountType, FinancialAccount, Prisma } from "@/prisma/app/generated/prisma/client";
+import {  Prisma } from "@/prisma/app/generated/prisma/client";
 import { convertBalanceType } from "@/libs/helpers";
-import { revalidatePath } from "next/cache";
-import { prismaVersion } from "@/prisma/app/generated/prisma/internal/prismaNamespace";
+
 import { convertDecimalToNumber } from "@/libs/api-helper";
 export async function getFinancialAccountByUser(): Promise<
   ActionResult<ConvertedFinancialAccount[]>

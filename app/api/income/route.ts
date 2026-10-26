@@ -3,7 +3,7 @@ import { getUserId } from "@/libs/helpers";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/db/db";
 import { incomeSchema } from "@/libs/validators";
-import { TagX } from "lucide-react";
+
 
 export const GET = async (req: NextRequest) => {
   const session = await getUserId();

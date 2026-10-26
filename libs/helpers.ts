@@ -7,8 +7,8 @@ import {
 } from "@/prisma/app/generated/prisma/client";
 import { ConvertedFinancialAccount } from "./types";
 import { auth } from "@/auth";
-
-
+import { ErrorResponse } from "resend";
+import { number } from "zod";
 
 // i used this in the session callbacks
 export const fetchUserWithEmail = async (email: string) => {
@@ -20,7 +20,7 @@ export const fetchUserWithEmail = async (email: string) => {
 
 // using this function to get authentication
 export const getUserId = async () => {
-  const session = await auth()
+  const session = await auth();
   if (!session?.userId) {
     return null;
   }
@@ -28,45 +28,47 @@ export const getUserId = async () => {
 };
 
 // changing the shape of the financial account data
-export const updatedFinancialAccountData = (data: ConvertedFinancialAccount[]) => {
+export const updatedFinancialAccountData = (
+  data: ConvertedFinancialAccount[],
+) => {
   return data.map((account) => ({
     accountNumber: account.accountNumber ?? undefined,
     name: account.name,
     type: account.type,
     balance: Number(account.balance),
-    isActive: account.isActive
+    isActive: account.isActive,
   }));
 };
 
-const isFinancialAccount = (account: FinancialAccount | Income): account is FinancialAccount => {
+const isFinancialAccount = (
+  account: FinancialAccount | Income,
+): account is FinancialAccount => {
   return Object.hasOwn(account as FinancialAccount, "balance");
-}
+};
 
 // convert each balance from decimal to number
 export const convertBalanceType = (accounts: FinancialAccount[] | Income[]) => {
-
   const convertedAccount = accounts.map((each) => {
-    if (isFinancialAccount(each)){
+    if (isFinancialAccount(each)) {
       return {
         ...each,
-        balance: each.balance.toNumber()
-      }
+        balance: each.balance.toNumber(),
+      };
     }
     return {
       ...each,
-      amount: each.amount.toNumber()
-    }
-  })
+      amount: each.amount.toNumber(),
+    };
+  });
   return convertedAccount;
 };
-
 
 // calculate the trend
 export const calculateMonthlyTrend = (
   monthlyData: {
     month: string;
     total: number;
-  }[]
+  }[],
 ) => {
   const currentMonth = monthlyData[0];
   const lastMonth = monthlyData[1];
@@ -80,4 +82,17 @@ export const calculateMonthlyTrend = (
   const difference = currentMonth.total - lastMonth.total;
 
   return (difference / lastMonth.total) * 100;
+};
+
+// calculate expense and budeget percentage
+export const calculateMonthlyDifference = (budget: number, expense: number) => {
+  if (!budget || !expense) {
+    return 0;
+  }
+
+  const difference = budget - expense;
+
+  const percentage = difference / budget;
+
+  return percentage * 100;
 };

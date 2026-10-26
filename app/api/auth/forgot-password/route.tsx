@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/db/db";
-import { Resend, ErrorResponse } from "resend";
+import { Resend} from "resend";
 import { randomInt } from "crypto";
 import { hashSync } from "bcrypt-ts";
 import { otpRequestLimiter } from "@/libs/redis";
@@ -20,10 +20,10 @@ export const POST = async (req: NextRequest) => {
     });
 
     if (!emailExists) {
-      console.log("i am here")
+      
       throw new Error("email does not exist");
     }
-    //applying rate limiter logiv
+    //applying rate limiter logic
     const {success, limit, remaining, reset} = await otpRequestLimiter.limit(email);
 
     if (!success){

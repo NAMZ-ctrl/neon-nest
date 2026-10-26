@@ -10,15 +10,20 @@ import { ForgotPasswordSchema, forgotPasswordSchema } from "@/libs/validators";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import React from "react";
 
 interface ForgotPasswordInputProps {
   email: string;
-  onSuccess: () => void
+  onSuccess: () => void;
+  emailInput: string;
+  setEmailInput: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ForgotPasswordEmailInput({
   email,
-  onSuccess
+  onSuccess,
+  emailInput,
+  setEmailInput,
 }: ForgotPasswordInputProps) {
   const form = useForm<ForgotPasswordSchema>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -29,11 +34,13 @@ export default function ForgotPasswordEmailInput({
 
   const onSubmit = async (values: ForgotPasswordSchema) => {
     try {
-      await axios.post("/api/auth/forgot-password", values);
+      const response = await axios.post("/api/auth/forgot-password", values);
+        if (response.status === 200){
 
-      toast.success("Verification code sent");
-
-      onSuccess()
+            toast.success("Verification code sent");
+            setEmailInput(form.watch("email"))
+            onSuccess();
+        }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(

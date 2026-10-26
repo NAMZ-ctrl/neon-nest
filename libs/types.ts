@@ -1,10 +1,13 @@
-import type { FinancialAccount, Income} from "@/prisma/app/generated/prisma/client";
+import type {
+  ExpenseCategory,
+  FinancialAccount,
+  Income,
+} from "@/prisma/app/generated/prisma/client";
 
 // action result type
 export type ActionResult<T> =
   | { success: true; message: string; data?: T }
   | { success: false; message: string; data?: null };
-
 
 export interface RemoveDialogProp {
   open: boolean;
@@ -15,19 +18,16 @@ export interface RemoveDialogProp {
 export interface RemoveArchiveProp {
   open: boolean;
   setArchiveOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  id: string
+  id: string;
 }
 
-
 // using omit in typescript to convert my financial account type
-export type ConvertedFinancialAccount = Omit<FinancialAccount, "balance"> & {balance: number} 
-export type ConvertedIncome = Omit<Income, "amount"> & {amount: number}
+export type ConvertedFinancialAccount = Omit<FinancialAccount, "balance"> & {
+  balance: number;
+};
+export type ConvertedIncome = Omit<Income, "amount"> & { amount: number };
 export type IconName =
-  | "landmark"
-  | "currency"
-  | "wallet"
-  | "trending-up"
-  | "trending-down";
+  "landmark" | "currency" | "wallet" | "trending-up" | "trending-down";
 
 export interface SummaryCardData {
   title: string;
@@ -40,5 +40,20 @@ export interface SummaryCardData {
   };
 }
 
+export type ConvertedExpense = {
+  id: string;
+  accountId: string;
+  amount: number;
+  category: string;
+  date: Date | string;
+  description: string | null;
+};
+
+export type TotalBudget = {
+  id: string;
+  amount: number;
+  category: ExpenseCategory;
+  budgetId: string;
+};
 
 export type Period = "7d" | "1m" | "3m" | "6m" | "1y";

@@ -35,11 +35,11 @@ export default async function IncomePage() {
     getTopIncomeSource(),
   ]);
   if (!incomeData.success) return <div>no data found</div>;
-  console.log(averageIncome.data);
+    console.log("checking each data", totalIncome.data)
   const data = [
     {
       title: "Total Income",
-      amount: Number(totalIncome.data) ?? 0,
+      amount: Number(totalIncome.data),
       children: <CircleDollarSign />,
       type: "currency",
       trend: calculateMonthlyTrend(trend.data!),
@@ -50,12 +50,7 @@ export default async function IncomePage() {
       length: Number(averageIncome.data?.[0].count ?? 0),
       children: <ChartNoAxesColumnIncreasing />,
     },
-    {
-      title: "Top Income Source",
-      name: topIncome.data?.[0].name ?? "No income source",
-      value: Number(topIncome.data?.[0].percent ?? 0),
-      children: <BadgeDollarSign />,
-    },
+
   ];
   console.log("data", data);
   return (

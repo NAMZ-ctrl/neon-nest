@@ -16,9 +16,26 @@ export const getFinancialAccounts = async () => {
     }
 } 
 
-export const convertDecimalToNumber = <T extends {total: Prisma.Decimal}>(data: T[]) => {
-  return data.map((item) => ({
-    ...item,
-    total: item.total.toNumber(),
-  }));
+export const convertDecimalToNumber = <
+  T extends
+    | { total: Prisma.Decimal }
+    | { amount: Prisma.Decimal }
+>(
+  data: T[]
+) => {
+  const converter = data.map((each) => {
+    if ("amount" in each) {
+      return {
+        ...each,
+        amount: each.amount.toNumber(),
+      };
+    }
+
+    return {
+      ...each,
+      total: each.total.toNumber(),
+    };
+  });
+
+  return converter;
 };
